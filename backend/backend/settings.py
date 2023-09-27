@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-0@h5#v@c=a#xcm&=kj)$09p8koeusbs!y@ke&z3%p0*o-2^$7^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +37,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'enduser',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+import datetime
+# JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=60),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_AFTER_LIFETIME': datetime.timedelta(days=7),
+    'SLIDING_TOKEN_LIFETIME_MULTIPLIER': 1,
+}
+
+AUTH_USER_MODEL = 'enduser.EndUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

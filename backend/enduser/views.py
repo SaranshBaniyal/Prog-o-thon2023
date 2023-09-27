@@ -3,13 +3,17 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import EndUser
 from .serializers import EndUserSignUpSerializer, EndUserLoginSerializer
 import base64
 from django.core.files.base import ContentFile
 import cv2
 import face_recognition
 import uuid
+import os
+import tempfile
+from rest_framework.exceptions import ValidationError
+from .models import EndUser
+import numpy as np
 
 class EndUserSignUp(APIView):
     def post(self, request):
@@ -52,3 +56,38 @@ class EndUserLogin(APIView):
             else:
                 return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FaceId(APIView):
+    def post(self, request):
+        current_user = EndUser.objects.get(email=request.data.get('email'))
+        image_base64 = request.data.get('image_base64')
+        if image_base64:
+            try:
+                image_data = base64.b64decode(image_base64)
+            except Exception as e:
+                return Response({'error': 'Invalid base64 encoding for image.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Create a temporary directory to store the image
+            temp_dir = tempfile.mkdtemp()
+
+    
+            image_filename = f"{temp_dir}/temp_image.png"
+
+            # Write the image data to the temporary file
+            with open(image_filename, 'wb') as temp_file:
+                temp_file.write(image_data)
+
+            print(image_filename)
+            img = face_recognition.load_image_file(image_filename)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            temp_encodings = face_recognition.face_encodings(img)[0]
+            print("User", current_user.image_encodings)
+            print("Temp", temp_encodings)
+            
+            result = face_recognition.compare_faces([current_user.image_encodings], temp_encodings)
+            os.remove(image_filename)
+            os.rmdir(temp_dir)
+
+            return Response({'result': result}, status=status.HTTP_200_OK)
+        else:
+            raise ValidationError({'error': 'Image data (image_base64) is required.'}, code=status.HTTP_400_BAD_REQUEST)

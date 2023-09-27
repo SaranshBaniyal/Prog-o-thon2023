@@ -1,0 +1,70 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+.navbar-left {
+  flex: 1;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: #0056b3;
+}
+.profile-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #e5e5ee;
+  color: #333;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  max-width: 300px; /* Customize the maximum width */
+}
+
+/* Profile Popup Content */
+.profile-popup p {
+  margin: 0;
+  padding: 10px 0;
+}
+
+/* Close Button */
+.profile-popup button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.profile-popup button:hover {
+  background-color: #0056b3;
+}
+
+/* Position the close button at the top right corner */
+.profile-popup button.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

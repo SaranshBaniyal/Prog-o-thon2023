@@ -1,0 +1,48 @@
+/* Home.css */
+
+/* Style for the role-candidates container */
+
+/* Style for individual role-candidates sections */
+.role-candidates {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  /* width: 30%; Adjust as needed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the role title */
+.role-candidates h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+.role-time {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 50px;
+}
+/* Style for the candidates list */
+.candidates-list {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  padding: 0;
+}
+.btn-2 {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+/* Style for individual candidate items */
+.candidates-list li {
+  margin: 5px 0;
+  background-color: #e5e5e5;
+  padding: 20px;
+  cursor: pointer;
+}
+.candidate-name.selected {
+  background-color: #66c2ff; /* Change this to the desired highlight color */
+  color: #fff; /* Change this to the desired text color for selected candidate */
+  border: 1px solid #0099cc; /* Change this to the desired border color for selected candidate */
+}
+/* Additional styles can be added as needed */

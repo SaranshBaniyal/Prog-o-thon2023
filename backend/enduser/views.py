@@ -34,12 +34,16 @@ class EndUserSignUp(APIView):
             
             img = face_recognition.load_image_file(user.image.url.lstrip('/'))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            user.image_encodings = (face_recognition.face_encodings(img)[0]).tolist()
+            encodings = face_recognition.face_encodings(img)[0]
+            user.image_encodings = encodings.tolist()
             user.save()
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            return Response({'access_token': access_token}, status=status.HTTP_201_CREATED)
+            return Response({
+                                'access_token': access_token,
+                                'wallet_id': user.wallet_id
+                             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EndUserLogin(APIView):
@@ -52,7 +56,8 @@ class EndUserLogin(APIView):
             if user:
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
-                return Response({'access_token': access_token}, status=status.HTTP_200_OK)
+                return Response({'access_token': access_token,
+                                 'wallet_id': user.wallet_id}, status=status.HTTP_200_OK)
             else:
                 return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -85,9 +90,11 @@ class FaceId(APIView):
             print("Temp", temp_encodings)
             
             result = face_recognition.compare_faces([current_user.image_encodings], temp_encodings)
+            face_distance = face_recognition.face_distance([current_user.image_encodings], temp_encodings)
             os.remove(image_filename)
             os.rmdir(temp_dir)
 
-            return Response({'result': result}, status=status.HTTP_200_OK)
+            return Response({'result': result,
+                             'face_distance': face_distance}, status=status.HTTP_200_OK)
         else:
             raise ValidationError({'error': 'Image data (image_base64) is required.'}, code=status.HTTP_400_BAD_REQUEST)

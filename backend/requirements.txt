@@ -13,7 +13,7 @@ face-recognition-models==0.3.0
 jsonfield==3.1.0
 numpy==1.21.6
 opencv-python==4.8.0.76
-Pillow==10.0.1
+Pillow==9.5.0
 PyJWT==1.7.1
 pytz==2023.3.post1
 sqlparse==0.4.4

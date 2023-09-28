@@ -33,6 +33,9 @@ class EndUser(AbstractBaseUser, PermissionsMixin):
     )
     year = models.CharField(max_length=4)
 
+    image = models.ImageField(upload_to='pictures', default='default.svg')
+    image_encodings = models.JSONField(null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

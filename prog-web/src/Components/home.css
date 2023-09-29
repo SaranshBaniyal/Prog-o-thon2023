@@ -1,0 +1,69 @@
+/* Home.css */
+
+/* Style for the role-candidates container */
+
+/* Style for individual role-candidates sections */
+.role-candidates {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  /* width: 30%; Adjust as needed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.home-img {
+  width: 100%;
+  background-color: #f9efe4;
+}
+/* Style for the role title */
+.role-candidates h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+.role-time {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 50px;
+}
+/* Style for the candidates list */
+.candidates-list {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  padding: 0;
+}
+.btn-2 {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.btn-2 button {
+  background-color: #f9efe4;
+  color: black;
+  font-size: 20px;
+  width: 30%;
+}
+/* Style for individual candidate items */
+.candidates-list li {
+  width: 200px;
+  border-radius: 20px;
+  margin: 5px 0;
+  background-color: #fafafa;
+  padding: 20px;
+  cursor: pointer;
+}
+/* .candidate-name {
+    background-color: #f9efe4;
+  } */
+.candidate-name.selected {
+  background-color: #f9efe4; /* Change this to the desired highlight color */
+  color: #000; /* Change this to the desired text color for selected candidate */
+  /* border: 1px solid #0099cc; Change this to the desired border color for selected candidate */
+}
+/* Additional styles can be added as needed */
+.camera12 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

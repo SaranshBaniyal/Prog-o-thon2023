@@ -1,0 +1,92 @@
+/* Navbar.css */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* background-color: #333; Change the background color as needed */
+  /* color: #fff; Change the text color as needed */
+  padding: 35px;
+}
+.signin {
+  background-color: #0d0f12;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.options a {
+  /* color: #fff; Change the text color as needed */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.options a:hover {
+  /* color: #ff5733; Change the hover color as needed */
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .options {
+    margin-top: 10px;
+  }
+}
+/* Navbar.css */
+
+/* ... (previous styles) ... */
+
+.menu-button {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .menu-button {
+    display: block;
+  }
+
+  .options {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #333;
+    padding: 10px 20px;
+  }
+
+  .options.open {
+    display: flex;
+  }
+
+  /* Adjust the styles as needed for the hamburger icon */
+  .fas.fa-bars:before {
+    content: "\f0c9"; /* Unicode for the hamburger icon */
+  }
+
+  .fas.fa-times:before {
+    content: "\f00d"; /* Unicode for the close icon */
+  }
+}

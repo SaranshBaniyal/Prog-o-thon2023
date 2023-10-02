@@ -3,3 +3,12 @@ db.sqlite3
 
 # Ignore the .env file (if it exists)
 .env
+
+/prog-web/node_modules
+/prog-web/.pnp
+
+# testing
+/prog-web/coverage
+
+# production
+/prog-web/build

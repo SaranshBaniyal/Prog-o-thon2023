@@ -1,0 +1,72 @@
+/* Dashboard.css */
+.election-list-container {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.election-list-container h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+.home-img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.election-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.election-item {
+    background-color: #fff;
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: left;
+}
+
+.election-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.election-item h2 {
+    font-size: 1.5rem;
+    margin: 0 0 10px;
+    color: #333;
+}
+
+.election-item p {
+    font-size: 1rem;
+    margin: 0;
+    color: #777;
+}
+
+.election-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.election-ongoing {
+    border-left: 5px solid green;
+}
+
+.election-upcoming {
+    border-left: 5px solid orange;
+}
+
+.election-completed {
+    border-left: 5px solid gray;
+}

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import "./signup.css";
-import img1 from './9c386e8294f09b69097268c82c083301 1.svg'
-import Camera from "./Camera";
+import img1 from './undraw_voting_nvu7.svg'
+import CameraPopup from "./CameraPopup";
 import { context } from '..';
 import { useNavigate } from 'react-router';
 import { ethers } from 'ethers';
@@ -17,9 +17,9 @@ const Signup = () => {
     const [rollNo, setRollNo] = useState("");
     const [branch, setBranch] = useState("");
     const [year, setYear] = useState("");
-
     const [publicKey, setPublicKey] = useState('');
     const [connected, setConnected] = useState(false);
+    const [cameraActive, setCameraActive] = useState(false);
 
 
     const getPublicKey = async () => {
@@ -98,90 +98,87 @@ const Signup = () => {
 
     return (
 
-        <div className="App">
-
-            {/* <form onSubmit={handleSubmit}> */}
-            <div>
-                {" "}
-                <h1>Sign in to Continue</h1>
-
-                {/* <label htmlFor="fullName">Full Name:</label> */}
-                <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    value={fullName}
-                    placeholder="Full Name"
-                    onChange={handleFullNameChange}
-                />
-                {/* <label htmlFor="email">Email:</label> */}
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={email}
-                    placeholder="Email"
-                    onChange={handleEmailChange}
-                />
-                {/* <label htmlFor="password">Password:</label> */}
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={password}
-                    placeholder="Password"
-                    onChange={handlePasswordChange}
-                />
-                {/* <label htmlFor="rollNo">Roll No:</label> */}
-                <input
-                    type="text"
-                    id="rollNo"
-                    name="rollNo"
-                    value={rollNo}
-                    placeholder="Roll No:-"
-                    onChange={handleRollNoChange}
-                />
-                {/* <label htmlFor="role">Branch:</label> */}
-                <input
-                    type="text"
-                    id="role"
-                    name="role"
-                    value={branch}
-                    placeholder="Branch"
-                    onChange={handleBranchChange}
-                />
-
-                {/* <label htmlFor="year">Year:</label> */}
-                <input
-                    type="text"
-                    id="year"
-                    name="year"
-                    value={year}
-                    placeholder="Year"
-                    onChange={handleYearChange}
-                />
-
-                {!connected &&
-                    <div>
-                        <h1>Metamask is not connected</h1>
-                        <button onClick={getPublicKey}>Connect to metamask</button>
-                    </div>}
-                {connected && <div>
-                    <h1>Metamask is connected</h1>
-                    <h1>Connected wallet is {publicKey}</h1>
-                </div>}
-
-                <button className='cptre' onClick={() => setCameraactive(true)}>Capture image</button>
-                {cameraactive && <Camera />}
-                <button type="submit" onClick={handleSubmit}>Sign Up</button>
-
+        <div className="signup-container">
+        {cameraActive && 
+            <CameraPopup 
+                onClose={() => setCameraActive(false)} 
+                onSubmit={(image) => {
+                    setImg(image);
+                    setCameraActive(false);
+                }} 
+            />
+        }
+        <div className="signup-form-container">
+            <div className="form-header">
+                <h1>BlocBallot.</h1>
+                <h2>Sign in to Continue</h2>
             </div>
-            <div className="image-container">
-                {/* Your image here */}
-                <img src={img1} className="img-signup" alt="Your Image" />
-            </div>
+            <form className="signup-form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        name="fullName" 
+                        value={fullName} 
+                        placeholder="Name" 
+                        onChange={(e) => setFullName(e.target.value)} 
+                    />
+                </div>
+                <div className="form-group">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={email}
+                        placeholder="Email"
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={password}
+                        placeholder="Password"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
+                    <input 
+                        type="text" 
+                        id="rollNo" 
+                        name="rollNo" 
+                        value={rollNo} 
+                        placeholder="Roll No." 
+                        onChange={(e) => setRollNo(e.target.value)} 
+                    />
+                </div>
+                <div className="form-group image-upload-group">
+                    {!img && <label htmlFor="image" onClick={() => setCameraActive(true)} className="image-upload-label">Add your Image</label>}
+                    {img && <label htmlFor="image" onClick={() => setCameraActive(true)} className="image-upload-label">Your Image is uploaded, click here to re-click the photo</label>}
+                </div>
 
+                {!connected && 
+                    <div className="metamask-container">
+                        <button type="button" onClick={getPublicKey} className="metamask-button">
+                            Connect with Metamask
+                        </button>
+                    </div>
+                }
+                {connected && 
+                    <div className="metamask-container">
+                        <h1>Metamask is connected</h1>
+                        <h1>Connected wallet is {publicKey}</h1>
+                    </div>
+                }
+                <button type="submit" className="submit-button">Sign Up</button>
+            </form>
         </div>
+        <div className="image-container">
+            <img src={img1} className="img-signup" alt="Astronaut" />
+        </div>
+    </div>
     );
 };
 

@@ -3,10 +3,12 @@ import React, { useState, useContext } from 'react';
 import { context } from '..';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router';
+import img1 from './undraw_voting_nvu7.svg'
+import './Login.css';
 
 const Login = () => {
     const { img, setImg, names, setNames, islogin, setIsLogg, isReg, setIsReg, emails, setEmails } = useContext(context);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -28,75 +30,57 @@ const Login = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-            })
-            // console.log(data);
-            // if (data.status === 200) {
+            });
             alert(`Logged in successfully`);
             setIsLogg(true);
             navigate('/home');
             setEmails(email);
-            // }
-            // setEmails(email);
         } catch (error) {
-            console.error('Some error occured');
+            console.error('Some error occurred');
         }
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Login</h2>
-            <div style={styles.form}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    style={styles.input}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    style={styles.input}
-                />
-                <button onClick={handleLogin} style={styles.button}>
-                    Login
-                </button>
-                <Link to='/signup'><span>Not Registered</span></Link>
+        <div className="login-container">
+            <div className="login-form-container">
+                <div className="form-header">
+                    <h1>BlocBallot.</h1>
+                    <h2>Sign in to Continue</h2>
+                </div>
+                <form className="login-form" onSubmit={handleLogin}>
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value={email}
+                            onChange={handleEmailChange}
+                            required 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            value={password}
+                            onChange={handlePasswordChange}
+                            required 
+                        />
+                    </div>
+                    <button type="submit" className="submit-button">Login</button>
+                </form>
+                <div className="signup-link">
+                    <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
+                </div>
+            </div>
+            <div className="image-container">
+                <img src={img1} alt="Astronaut" />
             </div>
         </div>
     );
-};
-
-const styles = {
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: '100px',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    input: {
-        width: '300px',
-        padding: '10px',
-        margin: '5px',
-        fontSize: '16px',
-    },
-    button: {
-        width: '150px',
-        padding: '10px',
-        margin: '10px',
-        backgroundColor: '#007bff',
-        color: 'white',
-        border: 'none',
-        cursor: 'pointer',
-        fontSize: '18px',
-    },
 };
 
 export default Login;

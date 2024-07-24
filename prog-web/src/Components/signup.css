@@ -1,36 +1,131 @@
-/* Add this CSS to your component's stylesheet or a separate CSS file */
+/* Signup.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+}
 
-.App {
+.signup-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   height: 100vh;
 }
 
-/* Style for the left side (form) */
-.App > div {
-  width: 50%;
-  padding: 20px;
+.signup-form-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  justify-content: center;
+  padding: 50px;
+  background-color: #F4EFEA;
 }
 
-/* Style for the right side (image) */
-.image-container {
-  width: 50%;
-  height: 100%;
+.form-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.form-header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+}
+
+.signup-form .form-group {
+  margin-bottom: 20px;
+}
+
+.signup-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.signup-form .image-upload-group {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 40px;
+  margin-bottom: 20px;
 }
 
-/* Style for the image itself (adjust width and height as needed) */
+.signup-form .image-upload-input {
+  display: none;
+}
+
+.signup-form .image-upload-label {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.signup-form .metamask-container {
+  margin-top: 20px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.signup-form .metamask-button {
+  background-color: #F4EFEA;
+  color: #000;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.signup-form .submit-button {
+  background-color: #5151E5;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.signup-form .submit-button:hover {
+  background-color: #3737c4;
+}
+
+.signup-form .cptre {
+  background-color: #FFC107;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.signup-form .cptre:hover {
+  background-color: #E0A800;
+}
+
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
 .image-container img {
-  max-width: 100%;
+  max-width: 84%;
   max-height: 100%;
-}
-
-.img-signup {
-  margin-bottom: -150px;
+  object-fit: cover;
 }

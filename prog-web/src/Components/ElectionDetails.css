@@ -1,0 +1,33 @@
+.election-details-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.election-details-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.election-details-container p {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #666;
+}
+
+.vote-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.vote-button:hover {
+    background-color: #0056b3;
+}

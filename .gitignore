@@ -12,3 +12,7 @@ db.sqlite3
 
 # production
 /prog-web/build
+
+/venv
+
+*__pycache__

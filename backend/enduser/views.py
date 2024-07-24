@@ -19,24 +19,29 @@ class EndUserSignUp(APIView):
     def post(self, request):
         serializer = EndUserSignUpSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
             image_base64 = request.data.get('image_base64')
             try:
-                    image_data = base64.b64decode(image_base64)
+                image_data = base64.b64decode(image_base64)
             except Exception as e:
                 return Response({'error': 'Invalid base64 encoding for image.'}, status=status.HTTP_400_BAD_REQUEST)
             
+            user = serializer.save()
+
             # Generate a unique file name for the image (e.g., using uuid)
             image_filename = f"{uuid.uuid4()}.png"
 
             # Create a ContentFile from the decoded image data
             user.image.save(image_filename, ContentFile(image_data), save=True)
             
-            img = face_recognition.load_image_file(user.image.url.lstrip('/'))
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            # img = face_recognition.load_image_file(user.image.url.lstrip('/'))
+            # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.imread(user.image.url.lstrip('/'))
+
             encodings = face_recognition.face_encodings(img)[0]
             user.image_encodings = encodings.tolist()
             user.save()
+
+            #TODO: Add user to voter list on contract
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
@@ -83,8 +88,9 @@ class FaceId(APIView):
                 temp_file.write(image_data)
 
             print(image_filename)
-            img = face_recognition.load_image_file(image_filename)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            # img = face_recognition.load_image_file(image_filename)
+            # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.imread(image_filename)
             temp_encodings = face_recognition.face_encodings(img)[0]
             print("User", current_user.image_encodings)
             print("Temp", temp_encodings)
@@ -94,7 +100,12 @@ class FaceId(APIView):
             os.remove(image_filename)
             os.rmdir(temp_dir)
 
+            #TODO: Add logic for allowing user to vote on contract
+
             return Response({'result': result,
                              'face_distance': face_distance}, status=status.HTTP_200_OK)
         else:
-            raise ValidationError({'error': 'Image data (image_base64) is required.'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'error': 'Image datload_image_filea (image_base64) is required.'}, code=status.HTTP_400_BAD_REQUEST)
+
+  
+#TODO: Create a view for creating new election

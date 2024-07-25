@@ -27,20 +27,21 @@ class EndUserSignUp(APIView):
             
             user = serializer.save()
 
-            # Generate a unique file name for the image (e.g., using uuid)
-            image_filename = f"{uuid.uuid4()}.png"
+            np_array = np.frombuffer(image_data, np.uint8)
+            img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
 
-            # Create a ContentFile from the decoded image data
-            user.image.save(image_filename, ContentFile(image_data), save=True)
+            if img is None:
+                return Response({'error': 'Failed to decode image data.'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # img = face_recognition.load_image_file(user.image.url.lstrip('/'))
-            # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img = cv2.imread(user.image.url.lstrip('/'))
+            encodings = face_recognition.face_encodings(img)
+            if len(encodings) == 0:
+                return Response({'error': 'No face found in the image.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            encodings = face_recognition.face_encodings(img)[0]
+            encodings = encodings[0]
+
             user.image_encodings = encodings.tolist()
             user.save()
-
+            
             #TODO: Add user to voter list on contract
 
             refresh = RefreshToken.for_user(user)
@@ -76,29 +77,22 @@ class FaceId(APIView):
                 image_data = base64.b64decode(image_base64)
             except Exception as e:
                 return Response({'error': 'Invalid base64 encoding for image.'}, status=status.HTTP_400_BAD_REQUEST)
+            
 
-            # Create a temporary directory to store the image
-            temp_dir = tempfile.mkdtemp()
+            np_array = np.frombuffer(image_data, np.uint8)
+            img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
 
-    
-            image_filename = f"{temp_dir}/temp_image.png"
+            if img is None:
+                return Response({'error': 'Failed to decode image data.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            temp_encodings = face_recognition.face_encodings(img)
+            if len(temp_encodings) == 0:
+                return Response({'error': 'No face found in the image.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Write the image data to the temporary file
-            with open(image_filename, 'wb') as temp_file:
-                temp_file.write(image_data)
-
-            print(image_filename)
-            # img = face_recognition.load_image_file(image_filename)
-            # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img = cv2.imread(image_filename)
-            temp_encodings = face_recognition.face_encodings(img)[0]
-            print("User", current_user.image_encodings)
-            print("Temp", temp_encodings)
+            temp_encodings = temp_encodings[0]
             
             result = face_recognition.compare_faces([current_user.image_encodings], temp_encodings)
             face_distance = face_recognition.face_distance([current_user.image_encodings], temp_encodings)
-            os.remove(image_filename)
-            os.rmdir(temp_dir)
 
             #TODO: Add logic for allowing user to vote on contract
 

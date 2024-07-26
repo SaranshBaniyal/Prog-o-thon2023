@@ -5,15 +5,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import EndUserSignUpSerializer, EndUserLoginSerializer
 import base64
-from django.core.files.base import ContentFile
 import cv2
 import face_recognition
-import uuid
-import os
-import tempfile
 from rest_framework.exceptions import ValidationError
 from .models import EndUser
 import numpy as np
+from .utils import add_voter_to_contract, create_election_in_contract, verify_voter_face
 
 class EndUserSignUp(APIView):
     def post(self, request):
@@ -25,7 +22,7 @@ class EndUserSignUp(APIView):
             except Exception as e:
                 return Response({'error': 'Invalid base64 encoding for image.'}, status=status.HTTP_400_BAD_REQUEST)
             
-            user = serializer.save()
+            user: EndUser = serializer.save()
 
             np_array = np.frombuffer(image_data, np.uint8)
             img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
@@ -42,13 +39,15 @@ class EndUserSignUp(APIView):
             user.image_encodings = encodings.tolist()
             user.save()
             
-            #TODO: Add user to voter list on contract
+            # To add voter to the contract
+            tx_hash = add_voter_to_contract(user.wallet_id)
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             return Response({
                                 'access_token': access_token,
-                                'wallet_id': user.wallet_id
+                                'wallet_id': user.wallet_id,
+                                'transaction_hash': tx_hash
                              }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -94,12 +93,33 @@ class FaceId(APIView):
             result = face_recognition.compare_faces([current_user.image_encodings], temp_encodings)
             face_distance = face_recognition.face_distance([current_user.image_encodings], temp_encodings)
 
-            #TODO: Add logic for allowing user to vote on contract
+            # Logic for allowing user to vote on contract
+            if(result):
+                tx_hash = verify_voter_face(request.data.get('election_id'), current_user.wallet_id)
 
+                return Response({'result': result,
+                                'face_distance': face_distance,
+                                'transaction_hash': tx_hash}, status=status.HTTP_200_OK)
+            
             return Response({'result': result,
-                             'face_distance': face_distance}, status=status.HTTP_200_OK)
+                                'error': 'Face match not found.'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
-            raise ValidationError({'error': 'Image datload_image_filea (image_base64) is required.'}, code=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({'error': 'Image (image_base64) is required.'}, code=status.HTTP_400_BAD_REQUEST)
 
   
-#TODO: Create a view for creating new election
+class CreateElectionView(APIView):
+# View for creating new election
+    def post(self, request):
+        candidates = request.data.get('candidates')
+        end_datetime = request.data.get('end_datetime')
+        position = request.data.get('position')
+
+        if not candidates or not end_datetime or not position:
+            return Response({'error': 'Invalid input'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            tx_hash = create_election_in_contract(candidates, end_datetime, position)
+            return Response({'transaction_hash': tx_hash, 'candidates': candidates, 'end_datetime': end_datetime, 'position': position}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+

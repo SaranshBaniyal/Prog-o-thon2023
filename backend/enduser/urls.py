@@ -1,5 +1,6 @@
 from django.urls import path
 from enduser.views import EndUserSignUp, EndUserLogin, FaceId, CreateElectionView
+from enduser.views import EndUserSignUp, EndUserLogin, FaceId, CreateElectionView
 
 urlpatterns = [
     path('signup/', EndUserSignUp.as_view(), name='signup'),

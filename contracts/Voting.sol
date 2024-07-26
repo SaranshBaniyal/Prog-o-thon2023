@@ -5,49 +5,79 @@ contract Voting {
         string name;
         uint votes;
     }
-    Candidate[] public candidates;
-    address owner;
-    string public position;
-    mapping (address => bool) public voters;
-    uint public votingEndDateTime;
-
-    constructor(string[] memory candidatesNameList, uint endDateTime, string memory electionPosition) {
-    for (uint i = 0; i < candidatesNameList.length; i++) {
-        candidates.push(Candidate({
-            name: candidatesNameList[i],
-            votes: 0
-        }));
+    
+    struct Election {
+        string position;
+        Candidate[] candidates;
+        uint votingEndDateTime;
+        mapping(address => bool) hasVoted;
+        mapping(address => bool) faceVerified;
     }
-    owner = msg.sender;
-    votingEndDateTime = endDateTime;
-    position = electionPosition;
-}
+    
+    address public owner;
+    mapping(uint => Election) public elections;
+    uint public electionCount;
+    mapping(address => bool) public voters;
+    address[] public voterList;  // Array to store voter addresses
+
+    constructor() {
+        owner = 0xAC6A0813bBE546806ACB342307435014a37Ad15d;
+    }
 
     modifier onlyOwner {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Only owner can perform this action.");
         _;
     }
 
-    function addCandidate(string memory candidateName) public onlyOwner {
-        candidates.push(Candidate({
-                name: candidateName,
+    function createElection(string[] memory candidateNames, uint endDateTime, string memory position) public onlyOwner {
+        electionCount++;
+        Election storage newElection = elections[electionCount];
+        newElection.position = position;
+        newElection.votingEndDateTime = endDateTime;
+        
+        for (uint i = 0; i < candidateNames.length; i++) {
+            newElection.candidates.push(Candidate({
+                name: candidateNames[i],
                 votes: 0
-        }));
+            }));
+        }
     }
 
-    function vote(uint candidateIndex) public {
-        require(!voters[msg.sender], "You have already voted.");
-        require(candidateIndex < candidates.length, "Invalid candidate index.");
-
-        candidates[candidateIndex].votes++;
-        voters[msg.sender] = true;
+    function addVoter(address voter) public onlyOwner {
+        require(!voters[voter], "Voter is already registered.");  // Check if voter is already added
+        voters[voter] = true;
+        voterList.push(voter);  // Add voter to the array
     }
 
-    function getAllVotesOfCandiates() public view returns (Candidate[] memory) {
-        return candidates;
+    function verifyVoterFace(uint electionId, address voter) public onlyOwner {
+        require(electionId > 0 && electionId <= electionCount, "Invalid election ID.");
+        elections[electionId].faceVerified[voter] = true;
     }
 
-    function getVotingStatus() public view returns (bool) {
-        return (block.timestamp < votingEndDateTime);
+    function vote(uint electionId, uint candidateIndex) public {
+        require(electionId > 0 && electionId <= electionCount, "Invalid election ID.");
+        require(voters[msg.sender], "You are not authorized to vote.");
+        Election storage election = elections[electionId];
+        require(election.faceVerified[msg.sender], "Your face verification is not completed.");
+        require(!election.hasVoted[msg.sender], "You have already voted in this election.");
+        require(block.timestamp < election.votingEndDateTime, "Voting has ended.");
+        require(candidateIndex < election.candidates.length, "Invalid candidate index.");
+
+        election.candidates[candidateIndex].votes++;
+        election.hasVoted[msg.sender] = true;
+    }
+
+    function getAllVotesOfCandidates(uint electionId) public view returns (Candidate[] memory) {
+        require(electionId > 0 && electionId <= electionCount, "Invalid election ID.");
+        return elections[electionId].candidates;
+    }
+
+    function getVotingStatus(uint electionId) public view returns (bool) {
+        require(electionId > 0 && electionId <= electionCount, "Invalid election ID.");
+        return (block.timestamp < elections[electionId].votingEndDateTime);
+    }
+
+    function getVoterList() public view returns (address[] memory) {
+        return voterList;
     }
 }

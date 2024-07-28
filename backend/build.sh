@@ -2,7 +2,7 @@
 # Exit on error
 set -o errexit
 
-sudo apt install -y cmake
+sudo apt-get install -y cmake
 
 # Install Python dependencies
 pip install -r requirements.txt
